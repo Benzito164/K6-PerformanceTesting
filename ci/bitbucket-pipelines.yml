@@ -1,0 +1,10 @@
+image: loadimpact/k6:latest
+options:
+  max-time: 20
+pipelines:
+  default:
+  packages
+  - steps:
+      name: Run performance tests on k6 web dashboard
+      script:
+        - npm run k6-web
