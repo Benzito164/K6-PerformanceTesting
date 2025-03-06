@@ -22,12 +22,27 @@ export const shared_iter_scenario = {
 };
 
 export const per_vu_scenario = createScenario("per-vu-iterations", 90, "0", 15);
-//{
-//executor: "per-vu-iterations",
-//vus: 15,
-//iterations: 90,
-//startTime: "0s",
-//};
+
+export const rps_30_scenario = {
+  executor: 'constant-arrival-rate',
+  
+ // How long the test lasts
+ duration: '30s',
+
+ // How many iterations per timeUnit
+ rate: 30,
+
+ // Start `rate` iterations per second
+ timeUnit: '1s',
+
+ // Pre-allocate 2 VUs before starting the test
+ preAllocatedVUs: 2,
+
+ // Spin up a maximum of 50 VUs to sustain the defined
+ // constant arrival rate.
+ maxVUs: 50,
+
+}
 
 export function createScenario(executor, iterations, startTime, vus) {
   if (!startTime) {

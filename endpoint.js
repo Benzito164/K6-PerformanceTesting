@@ -1,19 +1,15 @@
 const EnvConfig = {
   dev: {
-    BASE_URL: "https://www.google.co.uk",
-    MY_FLAG: true,
+    BASE_URL: "https://test.k6.io/"
   },
   qa: {
-    BASE_URL: "https://pizza.qa.grafana.fun",
-    MY_FLAG: true,
+    BASE_URL: "https://pizza.qa.grafana.fun"
   },
   pre: {
-    BASE_URL: "https://pizza.ste.grafana.fun",
-    MY_FLAG: false,
+    BASE_URL: "https://pizza.ste.grafana.fun"
   },
   prod: {
-    BASE_URL: "https://pizza.grafana.fun",
-    MY_FLAG: false,
+    BASE_URL: "https://pizza.grafana.fun"
   },
 };
 const Config = EnvConfig[__ENV.ENVIRONMENT] || EnvConfig["prod"];
