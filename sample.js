@@ -1,35 +1,51 @@
-import { thresholds } from "./thresholds.js";
-import { per_vu_scenario as scenario } from "./scenario.js";
-import { GoToUrl } from "./actions.js";
-import { stages } from "./workloads.js";
-import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
-import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
+import { getCars, GoToUrl } from "./actions.js";
+import { CreateAllOutPutReports } from "./utils/report.js";
+import { setTestOptions } from "./loadtypeManager.js";
+import http from "k6/http";
 
-const smoke_options = {
-  //stages,
-  thresholds,
-  scenarios: { scenario },
-  summaryTrendStats: ["avg", "min", "med", "max", "p(90)", "p(95)", "p(99)"],
+export const options = setTestOptions(__ENV.TESTTYPE);
+const url = "http://localhost:8080/api/login";
+const actions = "http://localhost:8080/asset"
+let acces_token;
+
+const loginJsonBody = JSON.stringify({
+  username: "admin",
+  password: "test",
+});
+
+const params = {
+  headers: {
+    authorization: `Bearer ${acces_token}`,
+  },
 };
 
-export const options = smoke_options;
-
 export default function () {
-  GoToUrl();
+  let response = http.post(url, loginJsonBody, {});
+  http.p
+  let responseJson = response.json();
+  acces_token = responseJson.access_token;
+ console.log(`${responseJson.token_type} ${acces_token}`)
+ 
+  response = http.get(actions,{
+    headers: {
+      Authorization: `${responseJson.token_type} ${acces_token}`,
+    },
+  })
+  //console.log(response)
 }
 
 export function handleSummary(data) {
-  CreateAllOutPutReports(data);
+  return CreateAllOutPutReports(
+    data,
+    __ENV.TESTTYPE,
+    `${__ENV.TESTTYPE}-Test-Result`
+  );
 }
 
-function CreateAllOutPutReports(data, title, reportName) {
-  if (!title) {
-    title = `Load Test ${Date.now()}`;
-  }
-
-  return {
-    stdout: textSummary(data, { indent: "→", enableColors: true }),
-    "result.html": htmlReport(data, { title }),
-    "result.json": JSON.stringify(data),
-  };
+const onsiteIventorySearchPayload = {
+  filters:'' ,
+  first:0,
+getConstraints:false,
+getFilterNumbers:false,
+rows:100
 }
